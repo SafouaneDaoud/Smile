@@ -71,21 +71,34 @@ public class UserDao {
 		boolean b = false;
 		try {
 			if (field != "") {
-				String value = "";
-				if (field == "firstNameUser")
-					value = user.getFirstNameUser();
-				if (field == "lastNameUser")
-					value = user.getLastNameUser();
-				if (field == "roleUser")
-					value = user.getRoleUser();
-				if (field == "telUser")
-					value = user.getTelUser();
-				if (field == "emailUser")
-					value = user.getEmailUser();
-
 				Statement statement = utilJdbc.GetConnetion().createStatement();
-				String sql = "update user set " + field + "='" + value
-						+ "' where idUser=" + user.getIdUser();
+				String sql = "";
+				if (field == "firstNameUser") {
+					sql = "update user set " + field + "='"
+							+ user.getFirstNameUser() + "' where idUser="
+							+ user.getIdUser();
+				}
+				if (field == "lastNameUser") {
+					sql = "update user set " + field + "='"
+							+ user.getLastNameUser() + "' where idUser="
+							+ user.getIdUser();
+				}
+				if (field == "roleUser") {
+					sql = "update user set " + field + "='"
+							+ user.getRoleUser() + "' where idUser="
+							+ user.getIdUser();
+
+				}
+				if (field == "telUser") {
+					sql = "update user set " + field + "='" + user.getTelUser()
+							+ "' where idUser=" + user.getIdUser();
+				}
+				if (field == "emailUser") {
+					sql = "update user set " + field + "='"
+							+ user.getEmailUser() + "' where idUser="
+							+ user.getIdUser();
+				}
+
 				statement.executeUpdate(sql);
 				b = true;
 			}
