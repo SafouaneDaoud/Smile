@@ -16,7 +16,7 @@ public class UserDao {
 		try {
 			Statement statement = utilJdbc.GetConnetion().createStatement();
 			String sql = "insert into user (firstNameUser,lastNameUser,roleUser,"
-					+ "telUser,emailUser) values('"
+					+ "telUser,emailUser,loginUser,passwordUser) values('"
 					+ user.getFirstNameUser()
 					+ "','"
 					+ user.getLastNameUser()
@@ -25,7 +25,11 @@ public class UserDao {
 					+ "','"
 					+ user.getTelUser()
 					+ "','"
-					+ user.getEmailUser() + "')";
+					+ user.getEmailUser() 
+					+ "','"
+					+ user.getLoginUser()
+					+ "','"
+					+ user.getPasswordUser() + "')";
 			statement.executeUpdate(sql);
 			b = true;
 		} catch (SQLException e1) {
@@ -47,6 +51,8 @@ public class UserDao {
 				userTMP.setRoleUser(resultSet.getString("roleUser"));
 				userTMP.setTelUser(resultSet.getString("telUser"));
 				userTMP.setEmailUser(resultSet.getString("emailUser"));
+				userTMP.setLoginUser(resultSet.getString("loginUser"));
+				userTMP.setPasswordUser(resultSet.getString("passwordUser"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -87,7 +93,6 @@ public class UserDao {
 					sql = "update user set " + field + "='"
 							+ user.getRoleUser() + "' where idUser="
 							+ user.getIdUser();
-
 				}
 				if (field == "telUser") {
 					sql = "update user set " + field + "='" + user.getTelUser()
@@ -98,7 +103,16 @@ public class UserDao {
 							+ user.getEmailUser() + "' where idUser="
 							+ user.getIdUser();
 				}
-
+				if (field == "loginUser") {
+					sql = "update user set " + field + "='"
+							+ user.getLoginUser() + "' where idUser="
+							+ user.getIdUser();
+				}
+				if (field == "passwordUser") {
+					sql = "update user set " + field + "='"
+							+ user.getPasswordUser() + "' where idUser="
+							+ user.getIdUser();
+				}
 				statement.executeUpdate(sql);
 				b = true;
 			}
@@ -107,5 +121,4 @@ public class UserDao {
 		}
 		return b;
 	}
-
 }

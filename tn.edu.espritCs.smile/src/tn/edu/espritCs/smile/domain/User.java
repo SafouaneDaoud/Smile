@@ -8,6 +8,8 @@ public class User {
 	private String roleUser;
 	private String telUser;
 	private String emailUser;
+	private String loginUser;
+	private String passwordUser;
 
 	public int getIdUser() {
 		return idUser;
@@ -57,18 +59,36 @@ public class User {
 		this.emailUser = emailUser;
 	}
 
+	public String getLoginUser() {
+		return loginUser;
+	}
+
+	public void setLoginUser(String loginUser) {
+		this.loginUser = loginUser;
+	}
+
+	public String getPasswordUser() {
+		return passwordUser;
+	}
+
+	public void setPasswordUser(String passwordUser) {
+		this.passwordUser = passwordUser;
+	}
+
 	public User() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public User(String firstNameUser, String lastNameUser, String roleUser,
-			String telUser, String emailUser) {
+			String telUser, String emailUser, String loginUser,
+			String passwordUser) {
 		super();
 		this.firstNameUser = firstNameUser;
 		this.lastNameUser = lastNameUser;
 		this.roleUser = roleUser;
 		this.telUser = telUser;
 		this.emailUser = emailUser;
+		this.loginUser = loginUser;
+		this.passwordUser = passwordUser;
 	}
-
 }

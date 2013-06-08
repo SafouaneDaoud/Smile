@@ -85,4 +85,6 @@ public class SponsorshipDao {
 		}
 		return b;
 	}
+
+	
 }

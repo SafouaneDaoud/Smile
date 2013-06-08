@@ -7,6 +7,7 @@ import org.junit.Test;
 import tn.edu.espritCs.smile.dao.SponsorshipDao;
 import tn.edu.espritCs.smile.dao.UserDao;
 import tn.edu.espritCs.smile.dao.WishDao;
+import tn.edu.espritCs.smile.domain.Sponsorship;
 import tn.edu.espritCs.smile.domain.User;
 import tn.edu.espritCs.smile.domain.Wish;
 import tn.edu.espritCs.smile.technical.UtilJdbc;
@@ -19,7 +20,7 @@ public class TestRealPlateform {
 	@Test
 	public void testAddUser() {
 		User user = new User("Mohamed", "ben salah", "Child", "198",
-				"salah@bensalah.com");
+				"salah@bensalah.com", "Login", "Password");
 		Assert.assertTrue(userDao.addUser(user));
 	}
 
@@ -37,6 +38,8 @@ public class TestRealPlateform {
 		System.out.println("RoleUser: " + user.getRoleUser());
 		System.out.println("TelUser: " + user.getTelUser());
 		System.out.println("EMailUser: " + user.getEmailUser());
+		System.out.println("LoginUser: " + user.getLoginUser());
+		System.out.println("PasswordUser: " + user.getPasswordUser());
 		Assert.assertEquals("Ali", user.getFirstNameUser());
 	}
 
@@ -55,7 +58,7 @@ public class TestRealPlateform {
 		System.out.println("new one :" + user.getFirstNameUser());
 		Assert.assertTrue(userDao.updateUser(user, "firstNameUser"));
 	}
-	
+
 	@Test
 	public void testAddWish() {
 		Wish wish = new Wish("Je veux un congès", "Requested", 1, 2);
@@ -86,5 +89,36 @@ public class TestRealPlateform {
 		wish.setDescriptionWish("Ali");
 		System.out.println("new one :" + wish.getDescriptionWish());
 		Assert.assertTrue(wishDao.updateWish(wish, "descriptionWish"));
+	}
+
+	@Test
+	public void testAddSponsorship() {
+		Sponsorship sponsorship = new Sponsorship(1, 2);
+		Assert.assertTrue(sponsorshipDao.addSponsorship(sponsorship));
+	}
+
+	@Test
+	public void testFindSponsorshipById() {
+		Sponsorship sponsorship = sponsorshipDao.findSponsorshipById(1);
+		System.out.println("IdUserChild: " + sponsorship.getIdUserChild());
+		System.out.println("IdUserDonor: " + sponsorship.getIdUserDonor());
+		Assert.assertEquals(1, sponsorship.getIdUserChild());
+	}
+
+	@Test
+	public void testDeleteSponsorshipById() {
+		Sponsorship sponsorship = sponsorshipDao.findSponsorshipById(1);
+		System.out.println(sponsorship.getIdUserChild());
+		Assert.assertTrue(sponsorshipDao.deleteSponsorshipById(1));
+	}
+
+	@Test
+	public void testUpdateSponsorship() {
+		Sponsorship sponsorship = sponsorshipDao.findSponsorshipById(1);
+		System.out.println("old one :" + sponsorship.getIdUserChild());
+		sponsorship.setIdUserChild(2);
+		System.out.println("new one :" + sponsorship.getIdUserChild());
+		Assert.assertTrue(sponsorshipDao.updateSponsorship(sponsorship,
+				"idUserChild"));
 	}
 }
