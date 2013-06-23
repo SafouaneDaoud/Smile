@@ -3,6 +3,7 @@ package tn.edu.espritCs.smile.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import tn.edu.espritCs.smile.domain.User;
 import tn.edu.espritCs.smile.technical.UtilJdbc;
@@ -25,11 +26,10 @@ public class UserDao {
 					+ "','"
 					+ user.getTelUser()
 					+ "','"
-					+ user.getEmailUser() 
+					+ user.getEmailUser()
 					+ "','"
 					+ user.getLoginUser()
-					+ "','"
-					+ user.getPasswordUser() + "')";
+					+ "','" + user.getPasswordUser() + "')";
 			statement.executeUpdate(sql);
 			b = true;
 		} catch (SQLException e1) {
@@ -73,10 +73,10 @@ public class UserDao {
 		return b;
 	}
 
-	public boolean updateUser(User user, String field) {
+	public boolean updateUserByField(User user, String field) {
 		boolean b = false;
 		try {
-			if (field != "") {
+			if (field != "" && user != null) {
 				Statement statement = utilJdbc.GetConnetion().createStatement();
 				String sql = "";
 				if (field == "firstNameUser") {
@@ -120,5 +120,55 @@ public class UserDao {
 			e1.printStackTrace();
 		}
 		return b;
+	}
+
+	public boolean updateUser(User user) {
+		boolean b = false;
+		try {
+			if (user != null) {
+				Statement statement = utilJdbc.GetConnetion().createStatement();
+				String sql = "update user set firstNameUser='"
+						+ user.getFirstNameUser() + "',lastNameUser='"
+						+ user.getLastNameUser() + "',roleUser='"
+						+ user.getRoleUser() + "',telUser='"
+						+ user.getTelUser() + "',emailUser='"
+						+ user.getEmailUser() + "',loginUser='"
+						+ user.getLoginUser() + "',passwordUser='"
+						+ user.getPasswordUser() + "' where idUser="
+						+ user.getIdUser();
+				statement.executeUpdate(sql);
+				b = true;
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		return b;
+	}
+
+	public ArrayList<User> getAllUsersByRole(String role) {
+		ArrayList<User> lstUsers = new ArrayList<User>();
+
+		try {
+			Statement statement = utilJdbc.GetConnetion().createStatement();
+			String sql = "select * from user";//Retrieve all users
+			if (role != "All")//Filter retrieved users by role
+				sql += " where roleUser='" + role + "'";
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				User userTMP = new User();
+				userTMP.setIdUser(resultSet.getInt("idUser"));
+				userTMP.setFirstNameUser(resultSet.getString("firstNameUser"));
+				userTMP.setLastNameUser(resultSet.getString("lastNameUser"));
+				userTMP.setRoleUser(resultSet.getString("roleUser"));
+				userTMP.setTelUser(resultSet.getString("telUser"));
+				userTMP.setEmailUser(resultSet.getString("emailUser"));
+				userTMP.setLoginUser(resultSet.getString("loginUser"));
+				userTMP.setPasswordUser(resultSet.getString("passwordUser"));
+				lstUsers.add(userTMP);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lstUsers;
 	}
 }

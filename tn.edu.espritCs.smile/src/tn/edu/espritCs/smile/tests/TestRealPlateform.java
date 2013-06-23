@@ -10,6 +10,7 @@ import tn.edu.espritCs.smile.dao.WishDao;
 import tn.edu.espritCs.smile.domain.Sponsorship;
 import tn.edu.espritCs.smile.domain.User;
 import tn.edu.espritCs.smile.domain.Wish;
+import tn.edu.espritCs.smile.services.LoginService;
 import tn.edu.espritCs.smile.technical.UtilJdbc;
 
 public class TestRealPlateform {
@@ -51,12 +52,21 @@ public class TestRealPlateform {
 	}
 
 	@Test
+	public void testUpdateUserByField() {
+		User user = userDao.findUserById(1);
+		System.out.println("old one :" + user.getFirstNameUser());
+		user.setFirstNameUser("Ali");
+		System.out.println("new one :" + user.getFirstNameUser());
+		Assert.assertTrue(userDao.updateUserByField(user, "firstNameUser"));
+	}
+
+	@Test
 	public void testUpdateUser() {
 		User user = userDao.findUserById(1);
 		System.out.println("old one :" + user.getFirstNameUser());
 		user.setFirstNameUser("Ali");
 		System.out.println("new one :" + user.getFirstNameUser());
-		Assert.assertTrue(userDao.updateUser(user, "firstNameUser"));
+		Assert.assertTrue(userDao.updateUser(user));
 	}
 
 	@Test
@@ -120,5 +130,11 @@ public class TestRealPlateform {
 		System.out.println("new one :" + sponsorship.getIdUserChild());
 		Assert.assertTrue(sponsorshipDao.updateSponsorship(sponsorship,
 				"idUserChild"));
+	}
+
+	@Test
+	public void testLogin() {
+		LoginService loginService = new LoginService();
+		Assert.assertTrue(loginService.login("Ali", "Ali") != null);
 	}
 }
