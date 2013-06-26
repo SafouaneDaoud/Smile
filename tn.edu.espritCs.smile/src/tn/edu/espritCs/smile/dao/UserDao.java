@@ -147,12 +147,36 @@ public class UserDao {
 
 	public ArrayList<User> getAllUsersByRole(String role) {
 		ArrayList<User> lstUsers = new ArrayList<User>();
-
 		try {
 			Statement statement = utilJdbc.GetConnetion().createStatement();
-			String sql = "select * from user";//Retrieve all users
-			if (role != "All")//Filter retrieved users by role
+			String sql = "select * from user";// Retrieve all users
+			if (role != "All")// Filter retrieved users by role
 				sql += " where roleUser='" + role + "'";
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				User userTMP = new User();
+				userTMP.setIdUser(resultSet.getInt("idUser"));
+				userTMP.setFirstNameUser(resultSet.getString("firstNameUser"));
+				userTMP.setLastNameUser(resultSet.getString("lastNameUser"));
+				userTMP.setRoleUser(resultSet.getString("roleUser"));
+				userTMP.setTelUser(resultSet.getString("telUser"));
+				userTMP.setEmailUser(resultSet.getString("emailUser"));
+				userTMP.setLoginUser(resultSet.getString("loginUser"));
+				userTMP.setPasswordUser(resultSet.getString("passwordUser"));
+				lstUsers.add(userTMP);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lstUsers;
+	}
+
+	public ArrayList<User> getAllUsersBySponsor(int idUserDonor) {
+		ArrayList<User> lstUsers = new ArrayList<User>();
+		try {
+			Statement statement = utilJdbc.GetConnetion().createStatement();
+			String sql = "select user.* from user inner join sponsorship on user.idUser=sponsorship.idUserChild where sponsorship.idUserDonor="
+					+ idUserDonor;
 			ResultSet resultSet = statement.executeQuery(sql);
 			while (resultSet.next()) {
 				User userTMP = new User();

@@ -47,8 +47,8 @@ public class ListUsers extends JFrame {
 	private JButton btnPrint;
 
 	private Integer currentIdUser;
-	String[] listUserNames;
-	int[] listUserIds;
+	private String[] listUserNames;
+	private int[] listUserIds;
 
 	/**
 	 * Create the frame.
@@ -107,6 +107,16 @@ public class ListUsers extends JFrame {
 
 		listBoxUsers = new JList();
 		loadListUsers("All");
+		listBoxUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listBoxUsers.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (listUserIds.length > 0
+						&& listUserIds.length > listBoxUsers.getSelectedIndex())
+					currentIdUser = listUserIds[listBoxUsers.getSelectedIndex()];
+				else
+					currentIdUser = 0;
+			}
+		});
 		contentPane.add(listBoxUsers, "2, 4, 3, 15, fill, fill");
 
 		comboBoxRole = new JComboBox();
@@ -137,17 +147,6 @@ public class ListUsers extends JFrame {
 			}
 		});
 		contentPane.add(comboBoxRole, "4, 2, fill, default");
-		listBoxUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		contentPane.add(listBoxUsers, "2, 4, 7, 15, fill, fill");
-		listBoxUsers.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				if (listUserIds.length > 0
-						&& listUserIds.length > listBoxUsers.getSelectedIndex())
-					currentIdUser = listUserIds[listBoxUsers.getSelectedIndex()];
-				else
-					currentIdUser = 0;
-			}
-		});
 
 		btnAddUser = new JButton("Add user");
 		btnAddUser.addActionListener(new ActionListener() {

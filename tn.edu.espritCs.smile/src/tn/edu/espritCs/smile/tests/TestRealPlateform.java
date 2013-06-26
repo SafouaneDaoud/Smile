@@ -98,12 +98,12 @@ public class TestRealPlateform {
 		System.out.println("old one :" + wish.getDescriptionWish());
 		wish.setDescriptionWish("Ali");
 		System.out.println("new one :" + wish.getDescriptionWish());
-		Assert.assertTrue(wishDao.updateWish(wish, "descriptionWish"));
+		Assert.assertTrue(wishDao.updateWish(wish));
 	}
 
 	@Test
 	public void testAddSponsorship() {
-		Sponsorship sponsorship = new Sponsorship(1, 2);
+		Sponsorship sponsorship = new Sponsorship(2, 3);
 		Assert.assertTrue(sponsorshipDao.addSponsorship(sponsorship));
 	}
 
@@ -113,6 +113,15 @@ public class TestRealPlateform {
 		System.out.println("IdUserChild: " + sponsorship.getIdUserChild());
 		System.out.println("IdUserDonor: " + sponsorship.getIdUserDonor());
 		Assert.assertEquals(1, sponsorship.getIdUserChild());
+	}
+
+	@Test
+	public void testFindSponsorshipByDonorChildIds() {
+		Sponsorship sponsorship = sponsorshipDao
+				.findSponsorshipByDonorChildIds(3, 2);
+		System.out.println("IdUserChild: " + sponsorship.getIdUserChild());
+		System.out.println("IdUserDonor: " + sponsorship.getIdUserDonor());
+		Assert.assertEquals(2, sponsorship.getIdUserChild());
 	}
 
 	@Test
@@ -128,8 +137,7 @@ public class TestRealPlateform {
 		System.out.println("old one :" + sponsorship.getIdUserChild());
 		sponsorship.setIdUserChild(2);
 		System.out.println("new one :" + sponsorship.getIdUserChild());
-		Assert.assertTrue(sponsorshipDao.updateSponsorship(sponsorship,
-				"idUserChild"));
+		Assert.assertTrue(sponsorshipDao.updateSponsorship(sponsorship));
 	}
 
 	@Test

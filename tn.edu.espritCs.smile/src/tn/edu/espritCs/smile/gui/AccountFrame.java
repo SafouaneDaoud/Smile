@@ -32,22 +32,6 @@ public class AccountFrame extends JFrame {
 	private JComboBox comboBoxRole;
 
 	/**
-	 * Launch the application.
-	 */
-	// public static void main(String[] args) {
-	// EventQueue.invokeLater(new Runnable() {
-	// public void run() {
-	// try {
-	// AccountFrame frame = new AccountFrame();
-	// frame.setVisible(true);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// });
-	// }
-
-	/**
 	 * Create the frame.
 	 */
 	public AccountFrame(final User user) {
@@ -179,7 +163,6 @@ public class AccountFrame extends JFrame {
 
 	private void loadFields(User user) {
 		try {
-
 			if (user != null) {
 				textFieldFirstName.setText(user.getFirstNameUser());
 				textFieldLastName.setText(user.getLastNameUser());

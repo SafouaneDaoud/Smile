@@ -45,6 +45,26 @@ public class SponsorshipDao {
 		return sponsorshipTMP;
 	}
 
+	public Sponsorship findSponsorshipByDonorChildIds(int idDonor, int idChild) {
+		Sponsorship sponsorshipTMP = null;
+		try {
+			Statement statement = utilJdbc.GetConnetion().createStatement();
+			String sql = "select * from sponsorship where idUserDonor = "
+					+ idDonor + " and idUserChild = " + idChild;
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				sponsorshipTMP = new Sponsorship();
+				sponsorshipTMP.setIdSponsorship(resultSet
+						.getInt("idSponsorship"));
+				sponsorshipTMP.setIdUserChild(resultSet.getInt("idUserChild"));
+				sponsorshipTMP.setIdUserDonor(resultSet.getInt("idUserDonor"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return sponsorshipTMP;
+	}
+
 	public boolean deleteSponsorshipById(int idSponsorship) {
 		boolean b = false;
 		try {
@@ -59,32 +79,21 @@ public class SponsorshipDao {
 		return b;
 	}
 
-	public boolean updateSponsorship(Sponsorship sponsorship, String field) {
+	public boolean updateSponsorship(Sponsorship sponsorship) {
 		boolean b = false;
 		try {
-			if (field != "") {
-				Statement statement = utilJdbc.GetConnetion().createStatement();
-				String sql = "";
-				if (field == "idUserChild") {
-					sql = "update sponsorship set " + field + "="
-							+ sponsorship.getIdUserChild()
-							+ " where idSponsorship="
-							+ sponsorship.getIdSponsorship();
-				}
-				if (field == "idUserDonor") {
-					sql = "update sponsorship set " + field + "="
-							+ sponsorship.getIdUserDonor()
-							+ " where idSponsorship="
-							+ sponsorship.getIdSponsorship();
-				}
-				statement.executeUpdate(sql);
-				b = true;
-			}
+			Statement statement = utilJdbc.GetConnetion().createStatement();
+			String sql = "update sponsorship set idUserChild="
+					+ sponsorship.getIdUserChild() + ",idUserDonor="
+					+ sponsorship.getIdUserDonor() + " where idSponsorship="
+					+ sponsorship.getIdSponsorship();
+
+			statement.executeUpdate(sql);
+			b = true;
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
 		return b;
 	}
 
-	
 }

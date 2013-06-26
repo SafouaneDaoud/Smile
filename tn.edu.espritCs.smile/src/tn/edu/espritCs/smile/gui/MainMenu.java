@@ -21,6 +21,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
+import tn.edu.espritCs.smile.domain.Wish;
 import tn.edu.espritCs.smile.technical.UtilJdbc;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -31,22 +32,6 @@ import com.jgoodies.forms.layout.RowSpec;
 public class MainMenu extends JFrame {
 
 	private JPanel contentPane;
-
-	/**
-	 * Launch the application.
-	 */
-	// public static void main(String[] args) {
-	// EventQueue.invokeLater(new Runnable() {
-	// public void run() {
-	// try {
-	// MainMenu frame = new MainMenu();
-	// frame.setVisible(true);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// });
-	// }
 
 	/**
 	 * Create the frame.
@@ -91,30 +76,39 @@ public class MainMenu extends JFrame {
 		});
 		mnViews.add(mntmManageUsers);
 
-		JMenuItem mntmAskForA = new JMenuItem("Request a wish");
+		JMenuItem mntmAskForA = new JMenuItem("Request a new wish");
 		mntmAskForA.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Wish wish = new Wish();
+				RequestWishFrame requestWishFrame = new RequestWishFrame(wish);
+				requestWishFrame.setVisible(true);
 			}
 		});
 		mnViews.add(mntmAskForA);
 
-		JMenuItem mntmManageWishes = new JMenuItem("Manage wishes");
+		JMenuItem mntmManageWishes = new JMenuItem("View wishes");
 		mntmManageWishes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ListWishes listWishes = new ListWishes();
+				listWishes.setVisible(true);
 			}
 		});
-		mnViews.add(mntmManageWishes);
 
-		JMenuItem mntmRespondToA = new JMenuItem("Respond to a wish");
-		mntmRespondToA.addActionListener(new ActionListener() {
+		JMenuItem mntmMyWishes = new JMenuItem("My wishes");
+		mntmMyWishes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ListWishes listWishes = new ListWishes();
+				listWishes.setVisible(true);
 			}
 		});
-		mnViews.add(mntmRespondToA);
+		mnViews.add(mntmMyWishes);
+		mnViews.add(mntmManageWishes);
 
 		JMenuItem mntmSponsorship = new JMenuItem("Sponsorship");
 		mntmSponsorship.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				SponsorshipForm sponsorshipForm = new SponsorshipForm();
+				sponsorshipForm.setVisible(true);
 			}
 		});
 		mnViews.add(mntmSponsorship);
@@ -178,7 +172,6 @@ public class MainMenu extends JFrame {
 		} catch (JRException e) {
 			System.out.println("Compilation error: " + e.getMessage());
 			System.out.println(e.getStackTrace());
-
 		}
 	}
 }

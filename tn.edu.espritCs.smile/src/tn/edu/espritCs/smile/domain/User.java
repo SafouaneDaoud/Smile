@@ -91,4 +91,9 @@ public class User {
 		this.loginUser = loginUser;
 		this.passwordUser = passwordUser;
 	}
+
+	@Override
+	public boolean equals(Object arg0) {
+		return this.getIdUser() == ((User) arg0).getIdUser();
+	}
 }

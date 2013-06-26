@@ -19,6 +19,8 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class LoginPage extends JFrame {
 
@@ -48,7 +50,6 @@ public class LoginPage extends JFrame {
 	 * Create the frame.
 	 */
 	public LoginPage() {
-
 		setTitle("Identification form");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 315, 135);
@@ -93,6 +94,7 @@ public class LoginPage extends JFrame {
 		contentPane.add(lblPassword, "4, 4, left, default");
 
 		passwordFieldPassword = new JPasswordField();
+		
 		contentPane.add(passwordFieldPassword, "8, 4, fill, default");
 
 		JButton btnLogon = new JButton("Log me in");
