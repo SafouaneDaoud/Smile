@@ -15,6 +15,7 @@ import javax.swing.event.ListSelectionListener;
 
 import tn.edu.espritCs.smile.dao.WishDao;
 import tn.edu.espritCs.smile.domain.Wish;
+import tn.edu.espritCs.smile.services.MailingService;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -88,12 +89,16 @@ public class ListWishes extends JFrame {
 		btnValidateWish = new JButton("Validate wish");
 		btnValidateWish.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (LoginPage.currentUser.getRoleUser() == "Admin") {
-					WishDao wishDao = new WishDao();
-					Wish wish = wishDao.findWishById(currentIdWish);
-					wish.setStatusWish("Valid");
-					wishDao.updateWish(wish);
-				}
+				WishDao wishDao = new WishDao();
+				Wish wish = wishDao.findWishById(currentIdWish);
+				wish.setStatusWish("Valid");
+				wishDao.updateWish(wish);
+				MailingService ms = new MailingService();
+				ms.sendMail(
+						"Wish request from Child: " + wish.getIdUserChild()
+								+ " validated by Admin: "
+								+ LoginPage.currentUser.getIdUser(),
+						wish.getDescriptionWish());
 			}
 		});
 		contentPane.add(btnValidateWish, "26, 4");
@@ -101,13 +106,15 @@ public class ListWishes extends JFrame {
 		btnRespondeToWish = new JButton("Responde to wish");
 		btnRespondeToWish.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (LoginPage.currentUser.getRoleUser() == "Donor") {
-					WishDao wishDao = new WishDao();
-					Wish wish = wishDao.findWishById(currentIdWish);
-					wish.setIdUserDonor(LoginPage.currentUser.getIdUser());
-					wish.setStatusWish("Granted");
-					wishDao.updateWish(wish);
-				}
+				WishDao wishDao = new WishDao();
+				Wish wish = wishDao.findWishById(currentIdWish);
+				wish.setIdUserDonor(LoginPage.currentUser.getIdUser());
+				wish.setStatusWish("Granted");
+				wishDao.updateWish(wish);
+				MailingService ms = new MailingService();
+				ms.sendMail("Wish request from Child: " + wish.getIdUserChild()
+						+ " granted by Donor: " + wish.getIdUserDonor(),
+						wish.getDescriptionWish());
 			}
 		});
 		contentPane.add(btnRespondeToWish, "26, 6");
@@ -131,40 +138,42 @@ public class ListWishes extends JFrame {
 		btnModify = new JButton("Modify");
 		btnModify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (LoginPage.currentUser.getRoleUser() == "Child") {
-					WishDao wishDao = new WishDao();
-					Wish wish = wishDao.findWishById(currentIdWish);
-					if (wish != null && currentIdWish != 0) {
-						RequestWishFrame requestWishFrame = new RequestWishFrame(
-								wish);
-						requestWishFrame.setVisible(true);
-					}
+				WishDao wishDao = new WishDao();
+				Wish wish = wishDao.findWishById(currentIdWish);
+				if (wish != null && currentIdWish != 0) {
+					RequestWishFrame requestWishFrame = new RequestWishFrame(
+							wish);
+					requestWishFrame.setVisible(true);
 				}
 			}
 		});
 		contentPane.add(btnModify, "26, 8");
-
-		btnModify.setEnabled(LoginPage.currentUser.getRoleUser() == "Child");
-		btnValidateWish
-				.setEnabled(LoginPage.currentUser.getRoleUser() == "Admin");
-		btnRespondeToWish
-				.setEnabled(LoginPage.currentUser.getRoleUser() == "Donor");
+		btnValidateWish.setVisible(LoginPage.currentUser.getRoleUser().equals(
+				"Admin"));
+		btnRespondeToWish.setVisible(LoginPage.currentUser.getRoleUser()
+				.equals("Donor"));
+		btnModify.setVisible(LoginPage.currentUser.getRoleUser()
+				.equals("Child"));
 	}
 
 	private void loadListWishes() {
 		try {
 			WishDao wishDao = new WishDao();
 			ArrayList<Wish> lstWishes;
-			if (LoginPage.currentUser.getRoleUser() == "Child")
+			if (LoginPage.currentUser.getRoleUser().equals("Child"))
 				lstWishes = wishDao.getAllChildWishes(LoginPage.currentUser
 						.getIdUser());
+			else if (LoginPage.currentUser.getRoleUser().equals("Admin"))
+				lstWishes = wishDao.getAllWishesByStatus("Requested");
+			else if (LoginPage.currentUser.getRoleUser().equals("Donor"))
+				lstWishes = wishDao.getAllWishesByStatus("Valid");
 			else
-				lstWishes = wishDao.getAllWishes();
+				lstWishes = new ArrayList<Wish>();
 			listWishesDesc = new String[lstWishes.size()];
 			listWishesIds = new int[lstWishes.size()];
 			for (int i = 0; i < lstWishes.size(); i++) {
 				Wish wish = lstWishes.get(i);
-				String dataWish = "";
+				String dataWish = wish.getStatusWish() + ": ";
 				if (wish.getDescriptionWish().length() > 40)
 					dataWish = wish.getDescriptionWish().substring(0, 37)
 							+ "...";

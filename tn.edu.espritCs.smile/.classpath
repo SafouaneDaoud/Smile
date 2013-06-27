@@ -13,6 +13,12 @@
 	<classpathentry kind="lib" path="libs/jasperreports-5.1.0.jar"/>
 	<classpathentry kind="lib" path="libs/jpedal_lgpl.jar"/>
 	<classpathentry kind="lib" path="libs/jdt-compiler-3.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/dsn.jar"/>
+	<classpathentry kind="lib" path="libs/imap.jar"/>
+	<classpathentry kind="lib" path="libs/mailapi.jar"/>
+	<classpathentry kind="lib" path="libs/pop3.jar"/>
+	<classpathentry kind="lib" path="libs/SMSLib.jar"/>
+	<classpathentry kind="lib" path="libs/smtp.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

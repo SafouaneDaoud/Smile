@@ -195,4 +195,21 @@ public class UserDao {
 		}
 		return lstUsers;
 	}
+
+	public String getAllAdminsEmailAdresses() {
+		String emailAdresses = "";
+		try {
+			Statement statement = utilJdbc.GetConnetion().createStatement();
+			String sql = "select emailUser from user where roleUser='Admin'";
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				if (emailAdresses != "")
+					emailAdresses += ";";
+				emailAdresses += resultSet.getString("emailUser");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return emailAdresses;
+	}
 }

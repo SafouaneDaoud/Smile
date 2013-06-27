@@ -163,7 +163,7 @@ public class AccountFrame extends JFrame {
 
 	private void loadFields(User user) {
 		try {
-			if (user != null) {
+			if (user != null && user.getIdUser() > 0) {
 				textFieldFirstName.setText(user.getFirstNameUser());
 				textFieldLastName.setText(user.getLastNameUser());
 				comboBoxRole.setSelectedItem(user.getRoleUser());

@@ -68,10 +68,12 @@ public class WishDao {
 			Statement statement = utilJdbc.GetConnetion().createStatement();
 			String sql = "update wish set descriptionWish='"
 					+ wish.getDescriptionWish() + "',statusWish='"
-					+ wish.getStatusWish() + "',idUserChild="
-					+ wish.getIdUserChild() + ",idUserDonor="
-					+ wish.getIdUserDonor() + " where idWish="
-					+ wish.getIdWish();
+					+ wish.getStatusWish() + "'";
+			if (wish.getIdUserChild() > 0)
+				sql += ",idUserChild=" + wish.getIdUserChild();
+			if (wish.getIdUserDonor() > 0)
+				sql += ",idUserDonor=" + wish.getIdUserDonor();
+			sql += " where idWish=" + wish.getIdWish();
 			if (sql != "")
 				statement.executeUpdate(sql);
 			b = true;
@@ -108,6 +110,28 @@ public class WishDao {
 		try {
 			Statement statement = utilJdbc.GetConnetion().createStatement();
 			String sql = "select * from wish where idUserChild=" + idUser;
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				Wish wishTMP = new Wish();
+				wishTMP.setIdWish(resultSet.getInt("idWish"));
+				wishTMP.setDescriptionWish(resultSet
+						.getString("descriptionWish"));
+				wishTMP.setStatusWish(resultSet.getString("statusWish"));
+				wishTMP.setIdUserChild(resultSet.getInt("idUserChild"));
+				wishTMP.setIdUserDonor(resultSet.getInt("idUserDonor"));
+				lstWishes.add(wishTMP);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lstWishes;
+	}
+
+	public ArrayList<Wish> getAllWishesByStatus(String status) {
+		ArrayList<Wish> lstWishes = new ArrayList<Wish>();
+		try {
+			Statement statement = utilJdbc.GetConnetion().createStatement();
+			String sql = "select * from wish where statusWish=" + status + "'";
 			ResultSet resultSet = statement.executeQuery(sql);
 			while (resultSet.next()) {
 				Wish wishTMP = new Wish();

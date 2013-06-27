@@ -10,8 +10,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
+import tn.edu.espritCs.smile.dao.UserDao;
 import tn.edu.espritCs.smile.dao.WishDao;
 import tn.edu.espritCs.smile.domain.Wish;
+import tn.edu.espritCs.smile.services.MailingService;
+import tn.edu.espritCs.smile.technical.Mail;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -53,20 +56,28 @@ public class RequestWishFrame extends JFrame {
 						FormFactory.RELATED_GAP_ROWSPEC,
 						FormFactory.DEFAULT_ROWSPEC, }));
 
-		loadFields(wish);
 		btnSaveWish = new JButton("Save");
 		btnSaveWish.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				WishDao wishDao = new WishDao();
 				wish.setDescriptionWish(txtDescription.getText());
-				if (LoginPage.currentUser.getRoleUser() == "Child") {
-					wish.setIdUserChild(LoginPage.currentUser.getIdUser());
-					wish.setStatusWish("Requested");
-				}
-				if (wish.getIdWish() == 0)
+				wish.setIdUserChild(LoginPage.currentUser.getIdUser());
+				wish.setStatusWish("Requested");
+				MailingService ms = new MailingService();
+				if (wish.getIdWish() == 0) {
 					wishDao.addWish(wish);
-				else
+					ms.sendMail(
+							"New wish request added from Child: "
+									+ wish.getIdUserChild(),
+							txtDescription.getText());
+				} else {
 					wishDao.updateWish(wish);
+					ms.sendMail(
+							"Wish request updated from Child: "
+									+ wish.getIdUserChild(),
+							txtDescription.getText());
+				}
+
 			}
 		});
 		contentPane.add(btnSaveWish, "4, 2");
@@ -76,15 +87,17 @@ public class RequestWishFrame extends JFrame {
 
 		txtDescription = new JTextPane();
 		contentPane.add(txtDescription, "6, 4, 3, 1, fill, fill");
+
+		loadFields(wish);
 	}
 
 	private void loadFields(Wish wish) {
 		try {
-			if (wish != null) {
+			if (wish != null && wish.getIdWish() > 0) {
 				txtDescription.setText(wish.getDescriptionWish());
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 

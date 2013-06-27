@@ -2,9 +2,6 @@ package tn.edu.espritCs.smile.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -13,16 +10,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.view.JasperViewer;
 import tn.edu.espritCs.smile.domain.Wish;
-import tn.edu.espritCs.smile.technical.UtilJdbc;
+import tn.edu.espritCs.smile.services.ReportingService;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -32,6 +21,7 @@ import com.jgoodies.forms.layout.RowSpec;
 public class MainMenu extends JFrame {
 
 	private JPanel contentPane;
+	private ReportingService reportingService = new ReportingService();
 
 	/**
 	 * Create the frame.
@@ -75,6 +65,8 @@ public class MainMenu extends JFrame {
 			}
 		});
 		mnViews.add(mntmManageUsers);
+		mntmManageUsers.setVisible(LoginPage.currentUser.getRoleUser().equals(
+				"Admin"));
 
 		JMenuItem mntmAskForA = new JMenuItem("Request a new wish");
 		mntmAskForA.addActionListener(new ActionListener() {
@@ -85,6 +77,8 @@ public class MainMenu extends JFrame {
 			}
 		});
 		mnViews.add(mntmAskForA);
+		mntmAskForA.setVisible(LoginPage.currentUser.getRoleUser().equals(
+				"Child"));
 
 		JMenuItem mntmManageWishes = new JMenuItem("View wishes");
 		mntmManageWishes.addActionListener(new ActionListener() {
@@ -93,6 +87,10 @@ public class MainMenu extends JFrame {
 				listWishes.setVisible(true);
 			}
 		});
+		mnViews.add(mntmManageWishes);
+		mntmManageWishes.setVisible(LoginPage.currentUser.getRoleUser().equals(
+				"Admin")
+				|| LoginPage.currentUser.getRoleUser().equals("Donor"));
 
 		JMenuItem mntmMyWishes = new JMenuItem("My wishes");
 		mntmMyWishes.addActionListener(new ActionListener() {
@@ -102,7 +100,8 @@ public class MainMenu extends JFrame {
 			}
 		});
 		mnViews.add(mntmMyWishes);
-		mnViews.add(mntmManageWishes);
+		mntmMyWishes.setVisible(LoginPage.currentUser.getRoleUser().equals(
+				"Child"));
 
 		JMenuItem mntmSponsorship = new JMenuItem("Sponsorship");
 		mntmSponsorship.addActionListener(new ActionListener() {
@@ -112,6 +111,8 @@ public class MainMenu extends JFrame {
 			}
 		});
 		mnViews.add(mntmSponsorship);
+		mntmSponsorship.setVisible(LoginPage.currentUser.getRoleUser().equals(
+				"Donor"));
 
 		JMenu mnReporting = new JMenu("Reporting");
 		menuBar.add(mnReporting);
@@ -119,26 +120,33 @@ public class MainMenu extends JFrame {
 		JMenuItem mntmAllUsersList = new JMenuItem("All user's list");
 		mntmAllUsersList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				generateEMail("All");
+				reportingService.generateUsersReportByRole("All");
 			}
 		});
 		mnReporting.add(mntmAllUsersList);
+		mntmAllUsersList.setVisible(LoginPage.currentUser.getRoleUser().equals(
+				"Admin"));
 
 		JMenuItem mntmChildrensList = new JMenuItem("Children's list");
 		mntmChildrensList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				generateEMail("Child");
+				reportingService.generateUsersReportByRole("Child");
 			}
 		});
 		mnReporting.add(mntmChildrensList);
+		mntmChildrensList.setVisible(LoginPage.currentUser.getRoleUser()
+				.equals("Admin")
+				|| LoginPage.currentUser.getRoleUser().equals("Donor"));
 
 		JMenuItem mntmDonorsList = new JMenuItem("Donor's list");
 		mntmDonorsList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				generateEMail("Donor");
+				reportingService.generateUsersReportByRole("Donor");
 			}
 		});
 		mnReporting.add(mntmDonorsList);
+		mntmDonorsList.setVisible(LoginPage.currentUser.getRoleUser().equals(
+				"Admin"));
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -150,28 +158,5 @@ public class MainMenu extends JFrame {
 						FormFactory.RELATED_GAP_ROWSPEC,
 						FormFactory.DEFAULT_ROWSPEC, }));
 
-	}
-
-	private void generateEMail(String role) {
-		try {
-			// - Connection to database
-			UtilJdbc utilJdbc = new UtilJdbc();
-			Connection connection = utilJdbc.GetConnetion();
-			// - Loading and compilation of the report
-			JasperDesign jasperDesign = JRXmlLoader
-					.load("C:\\Users\\Safouane\\git\\Smile\\tn.edu.espritCs.smile\\reports\\usersList.jrxml");
-			JasperReport jasperReport = JasperCompileManager
-					.compileReport(jasperDesign);
-			// - Parameters to send to report
-			Map parameters = new HashMap();
-			parameters.put("Role", role);
-			// - Execution of the report
-			JasperPrint jasperPrint = JasperFillManager.fillReport(
-					jasperReport, parameters, connection);
-			JasperViewer.viewReport(jasperPrint, false);
-		} catch (JRException e) {
-			System.out.println("Compilation error: " + e.getMessage());
-			System.out.println(e.getStackTrace());
-		}
 	}
 }
