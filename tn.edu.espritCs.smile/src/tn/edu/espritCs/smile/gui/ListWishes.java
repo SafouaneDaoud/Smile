@@ -98,7 +98,8 @@ public class ListWishes extends JFrame {
 						"Wish request from Child: " + wish.getIdUserChild()
 								+ " validated by Admin: "
 								+ LoginPage.currentUser.getIdUser(),
-						wish.getDescriptionWish());
+						wish.getDescriptionWish(),
+						LoginPage.currentUser.getEmailUser());
 			}
 		});
 		contentPane.add(btnValidateWish, "26, 4");
@@ -114,7 +115,8 @@ public class ListWishes extends JFrame {
 				MailingService ms = new MailingService();
 				ms.sendMail("Wish request from Child: " + wish.getIdUserChild()
 						+ " granted by Donor: " + wish.getIdUserDonor(),
-						wish.getDescriptionWish());
+						wish.getDescriptionWish(),
+						LoginPage.currentUser.getEmailUser());
 			}
 		});
 		contentPane.add(btnRespondeToWish, "26, 6");

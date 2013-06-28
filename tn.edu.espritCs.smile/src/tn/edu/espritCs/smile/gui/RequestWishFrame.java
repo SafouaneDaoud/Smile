@@ -10,11 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
-import tn.edu.espritCs.smile.dao.UserDao;
 import tn.edu.espritCs.smile.dao.WishDao;
 import tn.edu.espritCs.smile.domain.Wish;
 import tn.edu.espritCs.smile.services.MailingService;
-import tn.edu.espritCs.smile.technical.Mail;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -69,13 +67,15 @@ public class RequestWishFrame extends JFrame {
 					ms.sendMail(
 							"New wish request added from Child: "
 									+ wish.getIdUserChild(),
-							txtDescription.getText());
+							txtDescription.getText(),
+							LoginPage.currentUser.getEmailUser());
 				} else {
 					wishDao.updateWish(wish);
 					ms.sendMail(
 							"Wish request updated from Child: "
 									+ wish.getIdUserChild(),
-							txtDescription.getText());
+							txtDescription.getText(),
+							LoginPage.currentUser.getEmailUser());
 				}
 
 			}

@@ -17,7 +17,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import tn.edu.espritCs.smile.dao.UserDao;
-import tn.edu.espritCs.smile.gui.LoginPage;
 import tn.edu.espritCs.smile.technical.Mail;
 
 public class MailingService {
@@ -92,12 +91,12 @@ public class MailingService {
 		}
 	}
 
-	public void sendMail(String mailSubject, String mailBody) {
+	public void sendMail(String mailSubject, String mailBody, String mailSender) {
 		try {
 			Mail mail = new Mail();
 			UserDao userDao = new UserDao();
 			mail.setMailAddressRecipient(userDao.getAllAdminsEmailAdresses());
-			mail.setMailAddressSender(LoginPage.currentUser.getEmailUser());
+			mail.setMailAddressSender(mailSender);
 			mail.setMailSubject(mailSubject);
 			String[] lines = mailBody.split("\\n");
 			String msg = "";
@@ -105,7 +104,7 @@ public class MailingService {
 				msg = msg + s;
 			}
 			mail.setMailObject(msg);
-			
+
 			MailingService ms = new MailingService();
 			ms.getMailProperties();
 
