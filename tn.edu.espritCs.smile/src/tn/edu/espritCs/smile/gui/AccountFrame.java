@@ -91,6 +91,8 @@ public class AccountFrame extends JFrame {
 		comboBoxRole.addItem("Admin");
 		comboBoxRole.addItem("Child");
 		comboBoxRole.addItem("Donor");
+		comboBoxRole.setEnabled(LoginPage.currentUser.getRoleUser().equals(
+				"Admin"));
 		contentPane.add(comboBoxRole, "6, 6, fill, default");
 
 		JLabel lblTel = new JLabel("Telephone:");

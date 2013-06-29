@@ -33,6 +33,9 @@ public class ListWishes extends JFrame {
 	private Integer currentIdWish;
 	private String[] listWishesDesc;
 	private int[] listWishesIds;
+	private JButton btnRefresh;
+
+	WishDao wishDao = new WishDao();
 
 	/**
 	 * Create the frame.
@@ -84,6 +87,8 @@ public class ListWishes extends JFrame {
 						FormFactory.RELATED_GAP_ROWSPEC,
 						FormFactory.DEFAULT_ROWSPEC,
 						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC,
+						FormFactory.RELATED_GAP_ROWSPEC,
 						RowSpec.decode("default:grow"), }));
 
 		btnValidateWish = new JButton("Validate wish");
@@ -107,7 +112,6 @@ public class ListWishes extends JFrame {
 		btnRespondeToWish = new JButton("Responde to wish");
 		btnRespondeToWish.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				WishDao wishDao = new WishDao();
 				Wish wish = wishDao.findWishById(currentIdWish);
 				wish.setIdUserDonor(LoginPage.currentUser.getIdUser());
 				wish.setStatusWish("Granted");
@@ -120,22 +124,6 @@ public class ListWishes extends JFrame {
 			}
 		});
 		contentPane.add(btnRespondeToWish, "26, 6");
-
-		listBoxWishes = new JList();
-		listBoxWishes.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent arg0) {
-				if (listWishesIds.length > 0
-						&& listWishesIds.length > listBoxWishes
-								.getSelectedIndex())
-					currentIdWish = listWishesIds[listBoxWishes
-							.getSelectedIndex()];
-				else
-					currentIdWish = 0;
-			}
-		});
-		loadListWishes();
-		listBoxWishes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		contentPane.add(listBoxWishes, "2, 4, 23, 7, fill, fill");
 
 		btnModify = new JButton("Modify");
 		btnModify.addActionListener(new ActionListener() {
@@ -150,6 +138,38 @@ public class ListWishes extends JFrame {
 			}
 		});
 		contentPane.add(btnModify, "26, 8");
+
+		btnRefresh = new JButton("Refresh");
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				loadListWishes();
+			}
+		});
+		contentPane.add(btnRefresh, "26, 10");
+
+		listBoxWishes = new JList();
+		listBoxWishes.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (listWishesIds.length > 0
+						&& listWishesIds.length > listBoxWishes
+								.getSelectedIndex()) {
+					currentIdWish = listWishesIds[listBoxWishes
+							.getSelectedIndex()];
+					Wish wish = wishDao.findWishById(currentIdWish);
+					btnModify.setEnabled(wish.getStatusWish().equals(
+							"Requested"));
+					btnValidateWish.setEnabled(wish.getStatusWish().equals(
+							"Requested"));
+					btnRespondeToWish.setEnabled(wish.getStatusWish().equals(
+							"Valid"));
+				} else
+					currentIdWish = 0;
+			}
+		});
+		loadListWishes();
+		listBoxWishes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		contentPane.add(listBoxWishes, "2, 4, 23, 9, fill, fill");
+
 		btnValidateWish.setVisible(LoginPage.currentUser.getRoleUser().equals(
 				"Admin"));
 		btnRespondeToWish.setVisible(LoginPage.currentUser.getRoleUser()
@@ -166,9 +186,10 @@ public class ListWishes extends JFrame {
 				lstWishes = wishDao.getAllChildWishes(LoginPage.currentUser
 						.getIdUser());
 			else if (LoginPage.currentUser.getRoleUser().equals("Admin"))
-				lstWishes = wishDao.getAllWishesByStatus("Requested");
+				lstWishes = wishDao.getAllWishes();
 			else if (LoginPage.currentUser.getRoleUser().equals("Donor"))
-				lstWishes = wishDao.getAllWishesByStatus("Valid");
+				lstWishes = wishDao.getAllWishesByDonorId(LoginPage.currentUser
+						.getIdUser());
 			else
 				lstWishes = new ArrayList<Wish>();
 			listWishesDesc = new String[lstWishes.size()];
@@ -177,10 +198,10 @@ public class ListWishes extends JFrame {
 				Wish wish = lstWishes.get(i);
 				String dataWish = wish.getStatusWish() + ": ";
 				if (wish.getDescriptionWish().length() > 40)
-					dataWish = wish.getDescriptionWish().substring(0, 37)
+					dataWish += wish.getDescriptionWish().substring(0, 37)
 							+ "...";
 				else
-					dataWish = wish.getDescriptionWish();
+					dataWish += wish.getDescriptionWish();
 				listWishesDesc[i] = dataWish;
 				listWishesIds[i] = wish.getIdWish();
 			}

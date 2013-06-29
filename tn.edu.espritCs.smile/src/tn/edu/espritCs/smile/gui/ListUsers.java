@@ -40,6 +40,7 @@ public class ListUsers extends JFrame {
 	private int[] listUserIds;
 
 	private ReportingService reportingService = new ReportingService();
+	private JButton btnRefresh;
 
 	/**
 	 * Create the frame.
@@ -95,6 +96,8 @@ public class ListUsers extends JFrame {
 						FormFactory.RELATED_GAP_ROWSPEC,
 						FormFactory.DEFAULT_ROWSPEC,
 						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC,
+						FormFactory.RELATED_GAP_ROWSPEC,
 						FormFactory.DEFAULT_ROWSPEC, }));
 
 		lblRole = new JLabel("Role:");
@@ -112,7 +115,7 @@ public class ListUsers extends JFrame {
 					currentIdUser = 0;
 			}
 		});
-		contentPane.add(listBoxUsers, "2, 4, 9, 15, fill, fill");
+		contentPane.add(listBoxUsers, "2, 4, 9, 17, fill, fill");
 
 		comboBoxRole = new JComboBox();
 		comboBoxRole.addItem("All");
@@ -226,7 +229,32 @@ public class ListUsers extends JFrame {
 		});
 		contentPane.add(btnModifyUser, "12, 6");
 		contentPane.add(btnDeleteUser, "12, 8");
-		contentPane.add(btnPrint, "12, 10");
+
+		btnRefresh = new JButton("Refresh");
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String roleUser = "";
+				switch (comboBoxRole.getSelectedIndex()) {
+				case 0:
+					roleUser = "All";
+					break;
+				case 1:
+					roleUser = "Admin";
+					break;
+				case 2:
+					roleUser = "Child";
+					break;
+				case 3:
+					roleUser = "Donor";
+					break;
+				default:
+					break;
+				}
+				loadListUsers(roleUser);
+			}
+		});
+		contentPane.add(btnRefresh, "12, 10");
+		contentPane.add(btnPrint, "12, 12");
 	}
 
 	private void loadListUsers(String role) {

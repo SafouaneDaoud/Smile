@@ -27,7 +27,7 @@ public class MailingService {
 	Session session;
 	Message message;
 
-	public void getMailProperties() {
+	private void getMailProperties() {
 		this.properties = new Properties();
 		this.properties.put("mail.smtp.auth", "true");
 		this.properties.put("mail.smtp.starttls.enable", "true");
@@ -35,7 +35,7 @@ public class MailingService {
 		this.properties.put("mail.smtp.port", "587");
 	}
 
-	public void getMailMessage(String pieceJointe, final Mail mail) {
+	private void getMailMessage(String pieceJointe, final Mail mail) {
 		try {
 			this.session = Session.getInstance(this.properties,
 					new javax.mail.Authenticator() {
@@ -51,23 +51,21 @@ public class MailingService {
 			this.message.setSubject(mail.getMailSubject());
 
 			/**
-			 * Partie 1: Le texte
+			 * Part 1: body text
 			 */
 			MimeBodyPart mbp1 = new MimeBodyPart();
 			mbp1.setText(mail.getMailObject());
 
 			/**
-			 * Le fichier joint
+			 * Part 2: attached files
 			 */
 			MimeBodyPart mbp2 = null;
 			if (pieceJointe != "") {
 				mbp2 = new MimeBodyPart();
-				System.out.println("piece jointe");
 				String file = pieceJointe;
 				mbp2.attachFile(file);
 			}
 
-			// On regroupe les deux dans le message
 			MimeMultipart mp = new MimeMultipart();
 			mp.addBodyPart(mbp1);
 			if (mbp2 != null)

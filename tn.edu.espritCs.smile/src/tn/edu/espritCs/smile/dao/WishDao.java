@@ -16,11 +16,11 @@ public class WishDao {
 		boolean b = false;
 		try {
 			Statement statement = utilJdbc.GetConnetion().createStatement();
-			String sql = "insert into wish (descriptionWish,statusWish) values('"
+			String sql = "insert into wish (descriptionWish,statusWish,idUserChild) values('"
 					+ wish.getDescriptionWish()
 					+ "','"
 					+ wish.getStatusWish()
-					+ "')";
+					+ "'," + wish.getIdUserChild() + ")";
 			statement.executeUpdate(sql);
 			b = true;
 		} catch (SQLException e1) {
@@ -131,7 +131,30 @@ public class WishDao {
 		ArrayList<Wish> lstWishes = new ArrayList<Wish>();
 		try {
 			Statement statement = utilJdbc.GetConnetion().createStatement();
-			String sql = "select * from wish where statusWish=" + status + "'";
+			String sql = "select * from wish where statusWish='" + status + "'";
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				Wish wishTMP = new Wish();
+				wishTMP.setIdWish(resultSet.getInt("idWish"));
+				wishTMP.setDescriptionWish(resultSet
+						.getString("descriptionWish"));
+				wishTMP.setStatusWish(resultSet.getString("statusWish"));
+				wishTMP.setIdUserChild(resultSet.getInt("idUserChild"));
+				wishTMP.setIdUserDonor(resultSet.getInt("idUserDonor"));
+				lstWishes.add(wishTMP);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lstWishes;
+	}
+
+	public ArrayList<Wish> getAllWishesByDonorId(int donorId) {
+		ArrayList<Wish> lstWishes = new ArrayList<Wish>();
+		try {
+			Statement statement = utilJdbc.GetConnetion().createStatement();
+			String sql = "select * from wish where idUserChild in (select idUserChild from sponsorship where "
+					+ "idUserDonor =" + donorId + ")";
 			ResultSet resultSet = statement.executeQuery(sql);
 			while (resultSet.next()) {
 				Wish wishTMP = new Wish();

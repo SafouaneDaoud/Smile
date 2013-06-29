@@ -116,6 +116,8 @@ public class MainMenu extends JFrame {
 
 		JMenu mnReporting = new JMenu("Reporting");
 		menuBar.add(mnReporting);
+		mnReporting.setVisible(!LoginPage.currentUser.getRoleUser().equals(
+				"Child"));
 
 		JMenuItem mntmAllUsersList = new JMenuItem("All user's list");
 		mntmAllUsersList.addActionListener(new ActionListener() {
